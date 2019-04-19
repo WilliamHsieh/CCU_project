@@ -1,3 +1,11 @@
-x = [[1, 2], [3, 4]]
-print(x[0, 0])
+x = [1, 2]
+
+def haha():
+    global x
+    print(x)
+    x.append(3)
+    print(x)
+
+haha()
+print(x)
 
