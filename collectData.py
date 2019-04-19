@@ -2,23 +2,36 @@ import pandas as pd
 import pandas_datareader.data as web
 import datetime
 
-## train
-# 台灣股市的話要用 股票代號 加上 .TW
-start = datetime.datetime(1980, 1, 1)
-end = datetime.datetime(2018, 12, 31)
-data = web.DataReader('2330.TW', 'yahoo', start, end)
-# data = web.DataReader('0050.TW', 'yahoo', start, end)
-# data = web.DataReader('AAPL', 'iex', start, end)
+## Get training data
+def get_training_data():
 
-# save data
-# data.to_csv("stock_data_train.csv")
-data.to_csv("tmp.csv")
-print(data.head(10))
-print(len(data))
+    # get data from yahoo finance api
+    start = datetime.datetime(2014, 1, 1)
+    end = datetime.datetime(2018, 12, 31)
+    data = web.DataReader('2330.TW', 'yahoo', start, end)
 
-## test data
-# start = datetime.datetime(2019, 1, 1)
-# end = datetime.datetime(2019, 1, 31)
-# data = web.DataReader('0050.TW', 'yahoo', start, end)
-# data.to_csv("stock_data_test.csv")
+    # save data
+    data.to_csv("./data/stock_data_train.csv")
+    print("> training data ...")
+    print(data.head(10))
+
+
+## Get testing data
+def get_testing_data():
+
+    # get data from yahoo finance api
+    start = datetime.datetime(2019, 1, 1)
+    end = datetime.datetime(2019, 1, 31)
+    data = web.DataReader('2330.TW', 'yahoo', start, end)
+
+    # save data
+    data.to_csv("./data/stock_data_test.csv")
+    print("> testing data ...")
+    print(data.head(10))
+
+
+## Main function
+if __name__ == "__main__":
+    get_training_data()
+    get_testing_data()
 

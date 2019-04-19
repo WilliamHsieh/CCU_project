@@ -57,14 +57,28 @@ for data_length in range(len(testing_set_scaled[0])):
 dataset_total = training_data + testing_data
 inputs = dataset_total[len(dataset_total) - len(dataset_test) - 60:]
 x_test = []
+y_test = []
 for i in range(60, 81):  # timesteps: 60, 80 = previous 61 + testing 21
     x_test.append(inputs[i-60:i])
+    y_test.append(inputs[i])
 x_test = np.array(x_test)
+y_test = np.array(y_test)
 
 # X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))  # Reshape to 3-dimension
 
 # predict
-predicted_stock_price = model.predict(x_test)
+predicted_stock_price = []
+
+pre_60_days = x_test[0:1]
+
+for i in range(21):
+    tmp = model.predict(pre_60_days)
+    tmp = np.reshape(tmp, (1, tmp.shape[0], tmp.shape[1]))
+    pre_60_days = np.append(pre_60_days, tmp, axis=1)
+    predicted_stock_price.append(tmp.tolist()[0][0])
+    pre_60_days = [pre_60_days.tolist()[0][1:]]
+    pre_60_days = np.array(pre_60_days)
+
 
 predicted_close = []
 predicted_volumn = []
@@ -83,9 +97,13 @@ predicted_volumn_price = scaler_list[1].inverse_transform(predicted_volumn)  # t
 
 
 # accuracy
+# accuracy = 0
+# for i in range(1, 21):
+#     if ((real_stock_price[i]-real_stock_price[i-1]) * (predicted_close_price[0][i]-predicted_close_price[0][i-1]) > 0):
+#         accuracy += 1
 accuracy = 0
-for i in range(1, 21):
-    if ((real_stock_price[i]-real_stock_price[i-1]) * (predicted_close_price[0][i]-predicted_close_price[0][i-1]) > 0):
+for i in range(0, 21):
+    if (real_stock_price[i] - predicted_close_price[0][i]) / real_stock_price[i] < 0.005 and ((real_stock_price[i]-real_stock_price[i-1]) * (predicted_close_price[0][i]-predicted_close_price[0][i-1]) > 0):
         accuracy += 1
 
 # Visualising the results
@@ -96,4 +114,13 @@ plt.xlabel('Time')
 plt.ylabel('Stock Price')
 plt.legend()
 plt.show()
+
+import json
+with open('loss_acc.json') as infile:  
+    history = json.load(infile)
+    plt.plot(history['loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.show()
 
