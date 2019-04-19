@@ -1,3 +1,3 @@
 # CCU project
-* [note from hackmd](https://hackmd.io/zXHTHwS-TU--hL1uQmeq3A?both)
+* [note](https://hackmd.io/s/H1sco7AK4)
 
