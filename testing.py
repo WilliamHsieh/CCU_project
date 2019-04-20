@@ -4,8 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 ## Variable
-input_dim = 2
-total_epoch = 100
+input_dim = 1
+total_epoch = 50
 
 # Feature Scaling
 from sklearn.preprocessing import MinMaxScaler
@@ -28,19 +28,19 @@ real_stock_price = dataset_test.iloc[:, 4:5].values
 
 # scale training set
 training_set_scaled = []
-for x in range(len(training_set)):
+for x in range(input_dim):
     training_set_scaled.append(scaler_list[x].fit_transform(training_set[x]))
     
 # scale testing set
 testing_set_scaled = []
-for x in range(len(testing_set)):
+for x in range(input_dim):
     testing_set_scaled.append(scaler_list[x].fit_transform(testing_set[x]))
 
 # combine all dim. input
 training_data = []
 for data_length in range(len(training_set_scaled[0])):
     tmp = []
-    for data_count in range(len(training_set_scaled)):
+    for data_count in range(input_dim):
         tmp.append(np.ndarray.tolist(training_set_scaled[data_count][data_length])[0])
     training_data.append(tmp)
 
@@ -48,7 +48,7 @@ for data_length in range(len(training_set_scaled[0])):
 testing_data = []
 for data_length in range(len(testing_set_scaled[0])):
     tmp = []
-    for data_count in range(len(testing_set_scaled)):
+    for data_count in range(input_dim):
         tmp.append(np.ndarray.tolist(testing_set_scaled[data_count][data_length])[0])
     testing_data.append(tmp)
 
@@ -97,7 +97,7 @@ def draw(real, pred):
     plt.show()
 
 MSE = []
-for i in range(total_epoch):
+for i in range(total_epoch - 1, total_epoch):
     model = load_model(f'./model/epoch_{i}.h5')
     print(f'read model: ./model/epoch_{i}.h5')
 

@@ -18,7 +18,7 @@ x_train = []
 y_train = []
 total_epochs = 100
 batchSize = 32
-input_dim = 2
+input_dim = 3
 
 ## Function
 ### Feature Scaling
@@ -35,6 +35,9 @@ def get_training_data():
     dataset_train = pd.read_csv('./data/stock_data_train.csv')
     training_set.append(dataset_train.iloc[:, 4:5].values)  # close
     training_set.append(dataset_train.iloc[:, 5:6].values)  # volumn
+
+    dataset_train = pd.read_csv('./data/Nasdaq.csv')
+    training_set.append(dataset_train.iloc[:, 4:5].values)  # close
 
 ### Scale training set
 def scale_data():
@@ -74,6 +77,10 @@ def training():
     model.add(LSTM(units = 50, return_sequences = True))
     model.add(Dropout(0.2))
 
+    # Adding a second LSTM layer and some Dropout regularisation
+    model.add(LSTM(units = 50, return_sequences = True))
+    model.add(Dropout(0.2))
+
     # Adding a third LSTM layer and some Dropout regularisation
     model.add(LSTM(units = 50))
     model.add(Dropout(0.2))
@@ -82,10 +89,11 @@ def training():
     model.add(Dense(units = input_dim))
 
     # Compiling
-    model.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics=['accuracy'])
+    model.compile(optimizer = 'adam', loss = 'mean_squared_error')
 
     # Fit && save model/history
     for i in range(total_epochs):
+        print(f'epoch: {i + 1}/{total_epochs}')
         history = model.fit(x_train, y_train, epochs = 1, batch_size = batchSize)
         model.save(f'./model/epoch_{i}.h5')
         with open(f'./model/loss_{i}.json', 'w') as outfile:
