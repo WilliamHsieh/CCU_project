@@ -10,8 +10,7 @@ from keras.layers import Dropout
 from keras.models import Sequential
 from sklearn.preprocessing import MinMaxScaler
 
-## Function
-### Variable
+## Variable
 scaler_list = []
 training_set = []
 training_set_scaled = []
@@ -21,6 +20,7 @@ total_epochs = 100
 batchSize = 32
 input_dim = 2
 
+## Function
 ### Feature Scaling
 def feature_scaling():
     # 0. close
@@ -55,7 +55,7 @@ def orginize_data():
 
     # get x_train, y_train
     global x_train, y_train
-    for i in range(60, 1199):  # 1199 is total data amount
+    for i in range(60, len(training_data)):
         x_train.append(training_data[i-60:i])
         y_train.append(training_data[i])
 
@@ -82,16 +82,14 @@ def training():
     model.add(Dense(units = input_dim))
 
     # Compiling
-#     model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['accuracy'])
     model.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics=['accuracy'])
 
-    # Fit
-    history = model.fit(x_train, y_train, epochs = total_epochs, batch_size = batchSize)
-
-    # save model && history
-    model.save('./data/my_model.h5')
-    with open('./data/loss_and_acc.json', 'w') as outfile:
-        json.dump(history.history, outfile)
+    # Fit && save model/history
+    for i in range(total_epochs):
+        history = model.fit(x_train, y_train, epochs = 1, batch_size = batchSize)
+        model.save(f'./data/epoch_{i}.h5')
+        with open(f'./data/loss_{i}.json', 'w') as outfile:
+            json.dump(history.history, outfile)
 
     # Visualize the model
 #     from keras.utils import plot_model

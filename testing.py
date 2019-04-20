@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 ## Variable
 input_dim = 2
+total_epoch = 100
 
 # Feature Scaling
 from sklearn.preprocessing import MinMaxScaler
@@ -24,10 +25,6 @@ testing_set = []
 testing_set.append(dataset_test.iloc[:, 4:5].values)  # close
 testing_set.append(dataset_test.iloc[:, 5:6].values)  # volumn
 real_stock_price = dataset_test.iloc[:, 4:5].values
-
-# Load model
-from keras.models import load_model
-model = load_model('./data/my_model.h5')
 
 # scale training set
 training_set_scaled = []
@@ -76,39 +73,84 @@ y_test = np.array(y_test)
 #     predicted_stock_price.append(tmp.tolist()[0][0])
 #     pre_60_days = [pre_60_days.tolist()[0][1:]]
 #     pre_60_days = np.array(pre_60_days)
-predicted_stock_price = model.predict(x_test)
 
-# re-scale and transfer back to original vector
-predicted_close = []
-for i in range(len(predicted_stock_price)):
-    predicted_close.append(predicted_stock_price[i][0])
-
-np.array(predicted_close)
-predicted_close = np.reshape(predicted_close, (1, -1))
-predicted_close_price = scaler_list[0].inverse_transform(predicted_close)
-
-# accuracy
-accuracy = 0
-for i in range(0, 21):
-    if (real_stock_price[i] - predicted_close_price[0][i]) / real_stock_price[i] < 0.005 and ((real_stock_price[i]-real_stock_price[i-1]) * (predicted_close_price[0][i]-predicted_close_price[0][i-1]) > 0):
-        accuracy += 1
+# Load model
+from keras.models import load_model
+# model = load_model("./data/epoch_40.h5")
+# predicted_stock_price = model.predict(x_test)
+# predicted_close = []
+# for i in range(len(predicted_stock_price)):
+#     predicted_close.append(predicted_stock_price[i][0])
+# 
+# np.array(predicted_close)
+# predicted_close = np.reshape(predicted_close, (1, -1))
+# predicted_close_price = scaler_list[0].inverse_transform(predicted_close)
 
 # Visualising the prediction
-plt.plot(real_stock_price, color = 'red', label = 'Real Stock Price')  # red: real stock price
-plt.plot(predicted_close_price[0], color = 'blue', label = 'Predicted Stock Price') # blue: predicted stock price
-plt.title(f'Stock Price Prediction, accuracy: {accuracy/21*100:.2f}%')
-plt.xlabel('Time')
-plt.ylabel('Stock Price')
-plt.legend()
+def draw(real, pred):
+    plt.plot(real, color = 'red', label = 'Real Stock Price')  # red: real stock price
+    plt.plot(pred, color = 'blue', label = 'Predicted Stock Price') # blue: predicted stock price
+#     plt.title(f'Stock Price Prediction, accuracy: {accuracy/21*100:.2f}%')
+    plt.xlabel('Time')
+    plt.ylabel('Stock Price')
+    plt.legend()
+    plt.show()
+
+MSE = []
+for i in range(total_epoch):
+    model = load_model(f'./data/epoch_{i}.h5')
+    print(f'read model: ./data/epoch_{i}.h5')
+
+    predicted_stock_price = model.predict(x_test)
+
+    # re-scale and transfer back to original vector
+    predicted_close = []
+    for j in range(len(predicted_stock_price)):
+        predicted_close.append(predicted_stock_price[j][0])
+
+    np.array(predicted_close)
+    predicted_close = np.reshape(predicted_close, (1, -1))
+    predicted_close_price = scaler_list[0].inverse_transform(predicted_close)
+
+    # calculate mean square error
+    tmp = 0
+    for j in range(len(real_stock_price)):
+        tmp += (real_stock_price[j] - predicted_close_price[0][j]) ** 2
+    MSE += [tmp / len(real_stock_price)]
+
+    if (i + 1) % 10 == 0:
+        draw(real_stock_price, predicted_close_price[0])
+
+import pickle
+
+#Pickling
+with open("mse_100epochs.txt", "wb") as fp:   
+    pickle.dump(MSE, fp)
+
+# Unpickling
+# with open("mse_100epochs.txt", "rb") as fp:   
+#     b = pickle.load(fp)
+
+# plot the MSE
+plt.plot(MSE)
+plt.title('Mean Square Error')
+plt.xlabel('epoch')
+plt.ylabel('error')
 plt.show()
 
+# accuracy
+# accuracy = 0
+# for i in range(0, 21):
+#     if (real_stock_price[i] - predicted_close_price[0][i]) / real_stock_price[i] < 0.005 and ((real_stock_price[i]-real_stock_price[i-1]) * (predicted_close_price[0][i]-predicted_close_price[0][i-1]) > 0):
+#         accuracy += 1
+
 # Visualising the loss
-import json
-with open('./data/loss_and_acc.json') as infile:  
-    history = json.load(infile)
-    plt.plot(history['loss'])
-    plt.title('model loss')
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
-    plt.show()
+# import json
+# with open('./data/loss_and_acc.json') as infile:  
+#     history = json.load(infile)
+#     plt.plot(history['loss'])
+#     plt.title('model loss')
+#     plt.ylabel('loss')
+#     plt.xlabel('epoch')
+#     plt.show()
 
