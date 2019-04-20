@@ -98,8 +98,8 @@ def draw(real, pred):
 
 MSE = []
 for i in range(total_epoch):
-    model = load_model(f'./data/epoch_{i}.h5')
-    print(f'read model: ./data/epoch_{i}.h5')
+    model = load_model(f'./model/epoch_{i}.h5')
+    print(f'read model: ./model/epoch_{i}.h5')
 
     predicted_stock_price = model.predict(x_test)
 
@@ -124,7 +124,7 @@ for i in range(total_epoch):
 import pickle
 
 #Pickling
-with open("mse_100epochs.txt", "wb") as fp:   
+with open("./model/mse_100epochs.txt", "wb") as fp:   
     pickle.dump(MSE, fp)
 
 # Unpickling

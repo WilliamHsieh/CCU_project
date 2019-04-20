@@ -87,8 +87,8 @@ def training():
     # Fit && save model/history
     for i in range(total_epochs):
         history = model.fit(x_train, y_train, epochs = 1, batch_size = batchSize)
-        model.save(f'./data/epoch_{i}.h5')
-        with open(f'./data/loss_{i}.json', 'w') as outfile:
+        model.save(f'./model/epoch_{i}.h5')
+        with open(f'./model/loss_{i}.json', 'w') as outfile:
             json.dump(history.history, outfile)
 
     # Visualize the model
