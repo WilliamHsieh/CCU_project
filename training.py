@@ -32,11 +32,17 @@ def feature_scaling():
 ### Import the training set
 def get_training_data():
     global training_set
+    # stock of choice
     dataset_train = pd.read_csv('./data/stock_data_train.csv')
     training_set.append(dataset_train.iloc[:, 4:5].values)  # close
     training_set.append(dataset_train.iloc[:, 5:6].values)  # volumn
 
-    dataset_train = pd.read_csv('./data/Nasdaq.csv')
+    # Nasdaq
+    dataset_train = pd.read_csv('./data/nasdaq_train.csv')
+    training_set.append(dataset_train.iloc[:, 4:5].values)  # close
+
+    # dji
+    dataset_train = pd.read_csv('./data/dji_train.csv')
     training_set.append(dataset_train.iloc[:, 4:5].values)  # close
 
 ### Scale training set
