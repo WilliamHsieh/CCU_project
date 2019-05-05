@@ -1,29 +1,21 @@
-import os
-import datetime
-import pandas as pd
-import pandas_datareader.data as web
+import pickle
+import matplotlib.pyplot as plt
 
-## variable
-stock_of_choice = "^IXIC"
-
-## Get training data
-def get_training_data():
-
-    # get data from yahoo finance api
-    start = datetime.datetime(2014, 1, 1)
-    end = datetime.datetime(2018, 12, 31)
-    data = web.DataReader(stock_of_choice, 'yahoo', start, end)
-
-    # save data
-    data.to_csv("./data/Nasdaq.csv")
-    print("> training data ...")
-    print(data.head(10))
+# with open("./model/mse_100epochs.txt", "rb") as fp:   
+#     MSE = pickle.load(fp)
+# 
+# filename = 'haha'
+# 
+# plot the MSE
+# plt.plot(MSE, 'ro-')
+# plt.title('Mean Square Error')
+# plt.xlabel('epoch')
+# plt.ylabel('error')
+# plt.savefig(filename + '.png')
+# plt.show()
 
 
-## Main function
-if __name__ == "__main__":
-    if not os.path.exists("./data"):
-        os.mkdir("./data", 755)
-    get_training_data()
-#     get_testing_data()
+plt.plot([1, 2, 3, 4], [1, 4, 9, 16], 'ro')
+plt.xticks([i for i in range(10)])
+plt.show()
 

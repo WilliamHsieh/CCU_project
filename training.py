@@ -16,9 +16,9 @@ training_set = []
 training_set_scaled = []
 x_train = []
 y_train = []
-total_epochs = 100
+total_epochs = 300
 batchSize = 32
-input_dim = 3
+input_dim = 2
 
 ## Function
 ### Feature Scaling
