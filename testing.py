@@ -1,18 +1,26 @@
-# Import the libraries
+## Import
+import time
+import pickle
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-## Variable
-input_dim = 2
-total_epoch = 300
+from keras import backend as K
+from keras.models import load_model
 
-# Feature Scaling
+## Variable
+MSE = []
+input_dim = 2
+total_epochs = 2
+
+## Parse data
+### Feature Scaling
 from sklearn.preprocessing import MinMaxScaler
 scaler_list = []
 for i in range(input_dim):
     scaler_list.append(MinMaxScaler(feature_range = (0, 1)))
 
+### Import
 # Import the training set
 dataset_train = pd.read_csv('./data/stock_data_train.csv')
 training_set = []
@@ -35,7 +43,7 @@ testing_set.append(dataset_train.iloc[:, 4:5].values)
 dataset_testing = pd.read_csv('./data/dji_test.csv')    
 testing_set.append(dataset_train.iloc[:, 4:5].values)
 
-
+### Scale
 # scale training set
 training_set_scaled = []
 for x in range(input_dim):
@@ -46,7 +54,7 @@ testing_set_scaled = []
 for x in range(input_dim):
     testing_set_scaled.append(scaler_list[x].fit_transform(testing_set[x]))
 
-# combine all dim. input
+### Combine all dimension
 training_data = []
 for data_length in range(len(training_set_scaled[0])):
     tmp = []
@@ -54,7 +62,6 @@ for data_length in range(len(training_set_scaled[0])):
         tmp.append(np.ndarray.tolist(training_set_scaled[data_count][data_length])[0])
     training_data.append(tmp)
 
-# combine all dim. input
 testing_data = []
 for data_length in range(len(testing_set_scaled[0])):
     tmp = []
@@ -62,6 +69,7 @@ for data_length in range(len(testing_set_scaled[0])):
         tmp.append(np.ndarray.tolist(testing_set_scaled[data_count][data_length])[0])
     testing_data.append(tmp)
 
+### Create model input
 dataset_total = training_data + testing_data
 inputs = dataset_total[len(dataset_total) - len(dataset_test) - 60:]
 x_test = []
@@ -72,31 +80,7 @@ for i in range(60, 81):  # timesteps: 60, 80 = previous 61 + testing 21
 x_test = np.array(x_test)
 y_test = np.array(y_test)
 
-# predict
-# predicted_stock_price = []
-# pre_60_days = x_test[0:1]
-
-# for i in range(21):
-#     tmp = model.predict(pre_60_days)
-#     tmp = np.reshape(tmp, (1, tmp.shape[0], tmp.shape[1]))
-#     pre_60_days = np.append(pre_60_days, tmp, axis=1)
-#     predicted_stock_price.append(tmp.tolist()[0][0])
-#     pre_60_days = [pre_60_days.tolist()[0][1:]]
-#     pre_60_days = np.array(pre_60_days)
-
-# Load model
-from keras.models import load_model
-# model = load_model("./data/epoch_40.h5")
-# predicted_stock_price = model.predict(x_test)
-# predicted_close = []
-# for i in range(len(predicted_stock_price)):
-#     predicted_close.append(predicted_stock_price[i][0])
-# 
-# np.array(predicted_close)
-# predicted_close = np.reshape(predicted_close, (1, -1))
-# predicted_close_price = scaler_list[0].inverse_transform(predicted_close)
-
-# Visualising the prediction
+## Visualize the prediction
 def draw(real, pred, filename):
     plt.plot(real, 'ro-', label = 'Real Stock Price')  # red: real stock price
     plt.plot(pred, 'bo-', label = 'Predicted Stock Price') # blue: predicted stock price
@@ -106,72 +90,45 @@ def draw(real, pred, filename):
     plt.xticks([i for i in range(21)])
     plt.legend()
     plt.savefig(filename + '.png')
-    plt.clf()
 #     plt.show()
+    plt.clf()
 
-from keras import backend as K
-import time
-
-
-MSE = []
-for i in range(total_epoch):
+## Model predict
+path = f"./model/epoch_{total_epochs},dim_{input_dim}/"
+for i in range(total_epochs):
     start = time.time()
     K.clear_session()
-    model = load_model(f'./model/epoch_{i}.h5')
-    print(f'read model: ./model/epoch_{i}.h5')
 
-    predicted_stock_price = model.predict(x_test)
+    # load model
+    model = load_model(f'{path}epoch_{i}.h5')
+    print(f'read model: epoch_{i}.h5')
+    output = model.predict(x_test)
 
-    # re-scale and transfer back to original vector
-    predicted_close = []
-    for j in range(len(predicted_stock_price)):
-        predicted_close.append(predicted_stock_price[j][0])
+    # get all the close price
+    close_price = []
+    for j in range(len(output)):
+        close_price.append(output[j][0])
 
-    np.array(predicted_close)
-    predicted_close = np.reshape(predicted_close, (1, -1))
-    predicted_close_price = scaler_list[0].inverse_transform(predicted_close)
+    # re-scale back
+#     np.array(close_price)
+    close_price = np.reshape(close_price, (1, -1))
+    predicted_stock_price = scaler_list[0].inverse_transform(close_price)
 	
     # calculate mean square error
     tmp = 0
     for j in range(len(real_stock_price)):
-        tmp += (real_stock_price[j] - predicted_close_price[0][j]) ** 2
+        tmp += (real_stock_price[j] - predicted_stock_price[0][j]) ** 2
     MSE += [tmp / len(real_stock_price)]
 
     end = time.time()
     print(f'model complete: ./model/epoch_{i}.h5 ,  time: {end-start:.02f} secs')
 
-#     draw(real_stock_price, predicted_close_price[0], str(i))
+    if (i + 1) % 10 == 0:
+        draw(real_stock_price, predicted_stock_price[0], str(i))
 
-import pickle
+print("done.")
 
-#Pickling
-with open("./model/mse_300epochs.txt", "wb") as fp:   
+## Save (MSE) && plot
+with open(f"{path}MSE", "wb") as fp:   
     pickle.dump(MSE, fp)
-
-# Unpickling
-# with open("mse_100epochs.txt", "rb") as fp:   
-#     b = pickle.load(fp)
-
-# plot the MSE
-plt.plot(MSE)
-plt.title('Mean Square Error')
-plt.xlabel('epoch')
-plt.ylabel('error')
-plt.show()
-
-# accuracy
-# accuracy = 0
-# for i in range(0, 21):
-#     if (real_stock_price[i] - predicted_close_price[0][i]) / real_stock_price[i] < 0.005 and ((real_stock_price[i]-real_stock_price[i-1]) * (predicted_close_price[0][i]-predicted_close_price[0][i-1]) > 0):
-#         accuracy += 1
-
-# Visualising the loss
-# import json
-# with open('./data/loss_and_acc.json') as infile:  
-#     history = json.load(infile)
-#     plt.plot(history['loss'])
-#     plt.title('model loss')
-#     plt.ylabel('loss')
-#     plt.xlabel('epoch')
-#     plt.show()
 

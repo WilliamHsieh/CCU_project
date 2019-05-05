@@ -1,6 +1,7 @@
-## Import the libraries
+## Import
+import os
 import csv
-import json
+import pickle
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -8,6 +9,7 @@ from keras.layers import LSTM
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.models import Sequential
+from keras.optimizers import Adam
 from sklearn.preprocessing import MinMaxScaler
 
 ## Variable
@@ -16,9 +18,10 @@ training_set = []
 training_set_scaled = []
 x_train = []
 y_train = []
-total_epochs = 300
-batchSize = 32
 input_dim = 2
+total_epochs = 2
+batchSize = 32
+learning_rate = 0.001
 
 ## Function
 ### Feature Scaling
@@ -70,17 +73,13 @@ def orginize_data():
 
     x_train, y_train = np.array(x_train), np.array(y_train)
 
-### Model training
-def training():
+### Get model
+def get_model():
     # Initialising the RNN
     model = Sequential()
 
     # Adding the first LSTM layer and some Dropout regularisation
     model.add(LSTM(units = 50, return_sequences = True, input_shape = (x_train.shape[1], x_train.shape[2])))
-    model.add(Dropout(0.2))
-
-    # Adding a second LSTM layer and some Dropout regularisation
-    model.add(LSTM(units = 50, return_sequences = True))
     model.add(Dropout(0.2))
 
     # Adding a second LSTM layer and some Dropout regularisation
@@ -95,19 +94,34 @@ def training():
     model.add(Dense(units = input_dim))
 
     # Compiling
-    model.compile(optimizer = 'adam', loss = 'mean_squared_error')
+    opt = Adam(lr=learning_rate)
+    model.compile(optimizer = opt, loss = 'mean_squared_error')
+
+    return model
+
+### Model training
+def training():
+
+    model = get_model()
+    loss = []
 
     # Fit && save model/history
+    path = f"./model/epoch_{total_epochs},dim_{input_dim}/"
+    if not os.path.exists(path):
+        os.mkdir(path, 755)
+
+    # train
     for i in range(total_epochs):
         print(f'epoch: {i + 1}/{total_epochs}')
         history = model.fit(x_train, y_train, epochs = 1, batch_size = batchSize)
-        model.save(f'./model/epoch_{i}.h5')
-        with open(f'./model/loss_{i}.json', 'w') as outfile:
-            json.dump(history.history, outfile)
+        model.save(f'{path}epoch_{i}.h5')
+        loss += history.history['loss']
+
+    # save
+    with open(f'{path}loss', 'wb') as fp:
+        pickle.dump(loss, fp)
 
     # Visualize the model
-#     from keras.utils import plot_model
-#     plot_model(model, to_file='model.png', show_shapes=True, show_layer_names=True)
 #     print(model.summary())
 
 ## Main function
