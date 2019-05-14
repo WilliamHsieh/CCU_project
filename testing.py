@@ -10,9 +10,10 @@ from keras.models import load_model
 
 ## Variable
 MSE = []
-input_dim = 2
-total_epochs = 2
+input_dim = 4
+total_epochs = 300
 window_size = 60
+predict_days = 20
 
 ## Parse data
 ### Feature Scaling
@@ -21,48 +22,24 @@ scaler_list = []
 for i in range(input_dim):
     scaler_list.append(MinMaxScaler(feature_range = (0, 1)))
 
-### Import
-# Import the training set
-dataset_train = pd.read_csv('./data/stock_data_train.csv')
-training_set = []
-training_set.append(dataset_train.iloc[:, 4:5].values)  # close
-training_set.append(dataset_train.iloc[:, 5:6].values)  # volumn
-dataset_train = pd.read_csv('./data/nasdaq_train.csv')
-training_set.append(dataset_train.iloc[:, 4:5].values)
-dataset_train = pd.read_csv('./data/dji_train.csv')    
-training_set.append(dataset_train.iloc[:, 4:5].values)
-
-
-# Import the testing set
+### Import the testing set
 dataset_test = pd.read_csv('./data/stock_data_test.csv')
 testing_set = []
 testing_set.append(dataset_test.iloc[:, 4:5].values)  # close
 testing_set.append(dataset_test.iloc[:, 5:6].values)  # volumn
 real_stock_price = dataset_test.iloc[:, 4:5].values
+real_stock_price = real_stock_price[len(real_stock_price) - predict_days:]
 dataset_testing = pd.read_csv('./data/nasdaq_test.csv')
-testing_set.append(dataset_train.iloc[:, 4:5].values)
+testing_set.append(dataset_testing.iloc[:, 4:5].values)
 dataset_testing = pd.read_csv('./data/dji_test.csv')    
-testing_set.append(dataset_train.iloc[:, 4:5].values)
+testing_set.append(dataset_testing.iloc[:, 4:5].values)
 
-### Scale
-# scale training set
-training_set_scaled = []
-for x in range(input_dim):
-    training_set_scaled.append(scaler_list[x].fit_transform(training_set[x]))
-    
-# scale testing set
+### Scale testing set
 testing_set_scaled = []
 for x in range(input_dim):
     testing_set_scaled.append(scaler_list[x].fit_transform(testing_set[x]))
 
 ### Combine all dimension
-training_data = []
-for data_length in range(len(training_set_scaled[0])):
-    tmp = []
-    for data_count in range(input_dim):
-        tmp.append(np.ndarray.tolist(training_set_scaled[data_count][data_length])[0])
-    training_data.append(tmp)
-
 testing_data = []
 for data_length in range(len(testing_set_scaled[0])):
     tmp = []
@@ -71,12 +48,11 @@ for data_length in range(len(testing_set_scaled[0])):
     testing_data.append(tmp)
 
 ### Create model input
-dataset_total = training_data + testing_data
-inputs = dataset_total[len(dataset_total) - len(dataset_test) - 60:]
+inputs = testing_data[len(testing_data) - predict_days - window_size:]
 x_test = []
 y_test = []
-for i in range(60, len(inputs)):  # timesteps: 60, 80 = previous 61 + testing 21
-    x_test.append(inputs[i-60:i])
+for i in range(window_size, len(inputs)):
+    x_test.append(inputs[i-window_size:i])
     y_test.append(inputs[i])
 x_test = np.array(x_test)
 y_test = np.array(y_test)

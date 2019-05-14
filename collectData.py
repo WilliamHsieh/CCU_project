@@ -13,8 +13,8 @@ dji = "^DJI"
 def get_training_data():
 
     # time
-    start = datetime.datetime(2014, 1, 1)
-    end = datetime.datetime(2018, 12, 31)
+    start = datetime.datetime(2013, 1, 1)
+    end = datetime.datetime(2017, 12, 31)
 
     # stock of choice
     data = web.DataReader(stock, 'yahoo', start, end)
@@ -39,8 +39,8 @@ def get_training_data():
 def get_testing_data():
 
     # time
-    start = datetime.datetime(2019, 4, 1)
-    end = datetime.datetime(2019, 4, 30)
+    start = datetime.datetime(2018, 1, 1)
+    end = datetime.datetime(2018, 12, 31)
 
     # stock of choice
     data = web.DataReader(stock, 'yahoo', start, end)
