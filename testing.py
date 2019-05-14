@@ -124,7 +124,7 @@ for i in range(total_epochs):
     print(f'model complete: ./model/epoch_{i}.h5 ,  time: {end-start:.02f} secs')
 
     if (i + 1) % 10 == 0:
-        draw(real_stock_price, predicted_stock_price[0], str(i))
+        draw(real_stock_price, predicted_stock_price[0], path + str(i+1))
 
 print("done.")
 

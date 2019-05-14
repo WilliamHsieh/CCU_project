@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from keras.layers import LSTM
-from keras.layers import SimpleRNN
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.models import Sequential
@@ -23,15 +22,12 @@ input_dim = 2
 total_epochs = 2
 batchSize = 32
 learning_rate = 0.001
-window_size = 60
 
 ## Function
 ### Feature Scaling
 def feature_scaling():
     # 0. close
     # 1. volumn
-    # 2. Nasdaq
-    # 3. dji
     global scaler_list
     for x in range(input_dim):
         scaler_list.append(MinMaxScaler(feature_range = (0, 1)))
@@ -71,8 +67,8 @@ def orginize_data():
 
     # get x_train, y_train
     global x_train, y_train
-    for i in range(window_size, len(training_data)):
-        x_train.append(training_data[i-window_size:i])
+    for i in range(60, len(training_data)):
+        x_train.append(training_data[i-60:i])
         y_train.append(training_data[i])
 
     x_train, y_train = np.array(x_train), np.array(y_train)
