@@ -19,10 +19,11 @@ training_set = []
 training_set_scaled = []
 x_train = []
 y_train = []
-input_dim = 2
-total_epochs = 2
+input_dim = 4
+total_epochs = 300
 batchSize = 32
 learning_rate = 0.001
+loss_func = 'categorical_crossentropy'
 window_size = 60
 
 ## Function
@@ -73,7 +74,12 @@ def orginize_data():
     global x_train, y_train
     for i in range(window_size, len(training_data)):
         x_train.append(training_data[i-window_size:i])
-        y_train.append(training_data[i])
+        if (training_data[i][0] > training_data[i-1][0]):
+            y_train.append([1, 0, 0])
+        elif (training_data[i][0] == training_data[i-1][0]):
+            y_train.append([0, 1, 0])
+        elif (training_data[i][0] < training_data[i-1][0]):
+            y_train.append([0, 0, 1])
 
     x_train, y_train = np.array(x_train), np.array(y_train)
 
@@ -95,11 +101,11 @@ def get_model():
     model.add(Dropout(0.2))
 
     # Adding the output layer
-    model.add(Dense(units = input_dim))
+    model.add(Dense(units = 3))
 
     # Compiling
     opt = Adam(lr=learning_rate)
-    model.compile(optimizer = opt, loss = 'mean_squared_error')
+    model.compile(optimizer = opt, loss = loss_func)
 
     return model
 
@@ -114,6 +120,9 @@ def training():
     if not os.path.exists(path):
         os.mkdir(path, 755)
 
+    # Visualize the model
+    print(model.summary())
+
     # train
     for i in range(total_epochs):
         print(f'epoch: {i + 1}/{total_epochs}')
@@ -124,9 +133,6 @@ def training():
     # save
     with open(f'{path}loss', 'wb') as fp:
         pickle.dump(loss, fp)
-
-    # Visualize the model
-#     print(model.summary())
 
 ## Main function
 if __name__ == "__main__":
