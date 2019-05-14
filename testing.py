@@ -12,6 +12,7 @@ from keras.models import load_model
 MSE = []
 input_dim = 2
 total_epochs = 2
+window_size = 60
 
 ## Parse data
 ### Feature Scaling
@@ -74,7 +75,7 @@ dataset_total = training_data + testing_data
 inputs = dataset_total[len(dataset_total) - len(dataset_test) - 60:]
 x_test = []
 y_test = []
-for i in range(60, 81):  # timesteps: 60, 80 = previous 61 + testing 21
+for i in range(60, len(inputs)):  # timesteps: 60, 80 = previous 61 + testing 21
     x_test.append(inputs[i-60:i])
     y_test.append(inputs[i])
 x_test = np.array(x_test)
