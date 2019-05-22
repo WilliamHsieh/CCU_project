@@ -40,9 +40,9 @@ testing_set.append(dataset_test.iloc[:, 4:5].values)  # close
 testing_set.append(dataset_test.iloc[:, 5:6].values)  # volumn
 real_stock_price = dataset_test.iloc[:, 4:5].values
 dataset_testing = pd.read_csv('./data/nasdaq_test.csv')
-testing_set.append(dataset_train.iloc[:, 4:5].values)
+testing_set.append(dataset_test.iloc[:, 4:5].values)
 dataset_testing = pd.read_csv('./data/dji_test.csv')    
-testing_set.append(dataset_train.iloc[:, 4:5].values)
+testing_set.append(dataset_test.iloc[:, 4:5].values)
 
 ### Scale
 # scale training set
