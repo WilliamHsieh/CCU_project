@@ -1,3 +1,6 @@
-x = [1, 2, 3, 5]
-print(x.index(max(x)))
+from preprocess import getData
+import numpy as np
+
+[x, y], s = getData(data_flag = "train")
+print(x.shape)
 
