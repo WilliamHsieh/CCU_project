@@ -1,4 +1,5 @@
-# ignore the others folder
+# ignore the following folders
 others
 model
+__pycache__
 
