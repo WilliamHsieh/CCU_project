@@ -11,7 +11,7 @@ from keras.models import load_model
 ## Variable
 MSE = []
 input_dim = 4
-total_epochs = 300
+total_epochs = 5
 window_size = 60
 
 ## Parse data
@@ -75,7 +75,7 @@ dataset_total = training_data + testing_data
 inputs = dataset_total[len(dataset_total) - len(dataset_test) - 60:]
 x_test = []
 y_test = []
-for i in range(window_size, len(inputs)):  # timesteps: 60, 80 = previous 61 + testing 21
+for i in range(window_size, len(inputs)):
     x_test.append(inputs[i-window_size:i])
     if (inputs[i][0] > inputs[i-1][0]):
         y_test.append(0)
@@ -87,7 +87,7 @@ for i in range(window_size, len(inputs)):  # timesteps: 60, 80 = previous 61 + t
 x_test = np.array(x_test)
 
 ## Model predict
-path = f"./model/epoch_{total_epochs},dim_{input_dim}/"
+path = f"./model/class/epoch_{total_epochs},dim_{input_dim}/"
 for i in range(total_epochs):
     start = time.time()
     K.clear_session()
@@ -104,6 +104,7 @@ for i in range(total_epochs):
         if x.index(max(x)) == y_test[i]:
             acc += 1
 
+    print(output)
     print(f"accuracy: {acc * 100 / total_guess:.2f}%")
 
     end = time.time()

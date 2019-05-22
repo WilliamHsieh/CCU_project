@@ -20,7 +20,7 @@ training_set_scaled = []
 x_train = []
 y_train = []
 input_dim = 4
-total_epochs = 300
+total_epochs = 5
 batchSize = 32
 learning_rate = 0.001
 loss_func = 'categorical_crossentropy'
@@ -116,12 +116,12 @@ def training():
     loss = []
 
     # Fit && save model/history
-    path = f"./model/epoch_{total_epochs},dim_{input_dim}/"
+    path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
     if not os.path.exists(path):
         os.mkdir(path, 755)
 
     # Visualize the model
-    print(model.summary())
+#     print(model.summary())
 
     # train
     for i in range(total_epochs):

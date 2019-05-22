@@ -23,6 +23,7 @@ input_dim = 4
 total_epochs = 300
 batchSize = 32
 learning_rate = 0.001
+loss_func = 'mean_squared_error'
 window_size = 60
 
 ## Function
@@ -99,7 +100,7 @@ def get_model():
 
     # Compiling
     opt = Adam(lr=learning_rate)
-    model.compile(optimizer = opt, loss = 'mean_squared_error')
+    model.compile(optimizer = opt, loss = loss_func)
 
     return model
 
@@ -110,9 +111,12 @@ def training():
     loss = []
 
     # Fit && save model/history
-    path = f"./model/epoch_{total_epochs},dim_{input_dim}/"
+    path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
     if not os.path.exists(path):
         os.mkdir(path, 755)
+
+    # Visualize the model
+#     print(model.summary())
 
     # train
     for i in range(total_epochs):
@@ -124,9 +128,6 @@ def training():
     # save
     with open(f'{path}loss', 'wb') as fp:
         pickle.dump(loss, fp)
-
-    # Visualize the model
-#     print(model.summary())
 
 ## Main function
 if __name__ == "__main__":
