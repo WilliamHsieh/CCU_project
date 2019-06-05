@@ -12,8 +12,8 @@ from keras.models import load_model
 ## Variable
 MSE = []
 input_dim = 4
-total_epochs = 20
-window_size = 60
+total_epochs = 100
+window_size = 15
 predict_days = 20
 
 ## Get data
@@ -27,8 +27,8 @@ real_stock_price = real_stock_price[len(real_stock_price) - predict_days:]
 
 ## Model predict
 # load model
-path = f"./model/draw/"
-lstm = load_model(f'{path}tmp.h5')
+path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
+lstm = load_model(f'{path}epoch_{total_epochs-1}.h5')
 # rnn = load_model(f'{path}rnn.h5')
 lstm_output = lstm.predict(x_test)
 # rnn_output = rnn.predict(x_test)

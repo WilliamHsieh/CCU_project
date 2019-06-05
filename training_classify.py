@@ -5,12 +5,10 @@ import pickle
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from keras.layers import LSTM
-from keras.layers import SimpleRNN
-from keras.layers import Dense
-from keras.layers import Dropout
 from keras.models import Sequential
-from keras.optimizers import Adam
+from keras.layers import LSTM, SimpleRNN
+from keras.layers import Dense, Activation, Dropout
+from keras.optimizers import Adam, SGD
 from sklearn.preprocessing import MinMaxScaler
 
 ## Variable
@@ -20,7 +18,7 @@ training_set_scaled = []
 x_train = []
 y_train = []
 input_dim = 4
-total_epochs = 5
+total_epochs = 20
 batchSize = 32
 learning_rate = 0.001
 loss_func = 'categorical_crossentropy'
@@ -102,6 +100,7 @@ def get_model():
 
     # Adding the output layer
     model.add(Dense(units = 3))
+    model.add(Activation('softmax'))
 
     # Compiling
     opt = Adam(lr=learning_rate)
@@ -116,7 +115,7 @@ def training():
     loss = []
 
     # Fit && save model/history
-    path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
+    path = f"./model/class/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
     if not os.path.exists(path):
         os.mkdir(path, 755)
 

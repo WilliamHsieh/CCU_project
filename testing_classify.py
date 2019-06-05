@@ -11,7 +11,7 @@ from keras.models import load_model
 ## Variable
 MSE = []
 input_dim = 4
-total_epochs = 5
+total_epochs = 20
 window_size = 60
 
 ## Parse data
@@ -87,7 +87,7 @@ for i in range(window_size, len(inputs)):
 x_test = np.array(x_test)
 
 ## Model predict
-path = f"./model/class/epoch_{total_epochs},dim_{input_dim}/"
+path = f"./model/class/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
 for i in range(total_epochs):
     start = time.time()
     K.clear_session()
@@ -99,9 +99,9 @@ for i in range(total_epochs):
 
     acc = 0
     total_guess = len(inputs)
-    for i in range(len(output)):
-        x = output[i].tolist()
-        if x.index(max(x)) == y_test[i]:
+    for j in range(len(output)):
+        x = output[j].tolist()
+        if x.index(max(x)) == y_test[j]:
             acc += 1
 
     print(output)

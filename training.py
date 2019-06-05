@@ -12,11 +12,11 @@ from keras.optimizers import Adam
 
 ## Variable
 input_dim = 4
-total_epochs = 20
+total_epochs = 100
 batchSize = 32
 learning_rate = 0.001
 loss_func = 'mean_squared_error'
-window_size = 60
+window_size = 15
 
 ## Model definition
 def get_model(x_train):

@@ -1,6 +1,3 @@
-from preprocess import getData
-import numpy as np
-
-[x, y], s = getData(data_flag = "train")
-print(x.shape)
+import keras.layers
+print(keras.layers.__file__)
 
