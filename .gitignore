@@ -1,5 +1,5 @@
-# ignore the following folders
+__pycache__
 others
 model
-__pycache__
+tmp.py
 

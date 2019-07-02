@@ -11,12 +11,14 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 
 ## Variable
-input_dim = 4
-total_epochs = 100
+total_epochs = 300
+input_dim = 2
+window_size = 60
+num_units = 50
+
 batchSize = 32
 learning_rate = 0.001
 loss_func = 'mean_squared_error'
-window_size = 15
 
 ## Model definition
 def get_model(x_train):
@@ -24,19 +26,20 @@ def get_model(x_train):
     model = Sequential()
 
     # Adding the first LSTM layer and some Dropout regularisation
-    model.add(LSTM(units = 50, return_sequences = True, input_shape = (x_train.shape[1], x_train.shape[2])))
+    model.add(LSTM(units = num_units, return_sequences = True, input_shape = (x_train.shape[1], x_train.shape[2])))
     model.add(Dropout(0.2))
 
     # Adding a second LSTM layer and some Dropout regularisation
-    model.add(LSTM(units = 50, return_sequences = True))
+    model.add(LSTM(units = num_units, return_sequences = True))
     model.add(Dropout(0.2))
 
     # Adding a third LSTM layer and some Dropout regularisation
-    model.add(LSTM(units = 50))
+    model.add(LSTM(units = num_units))
     model.add(Dropout(0.2))
 
     # Adding the output layer
     model.add(Dense(units = input_dim))
+#     model.add(Dense(units = 1))
 
     # Compiling
     opt = Adam(lr=learning_rate)

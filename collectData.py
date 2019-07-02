@@ -18,7 +18,7 @@ def get_training_data():
 
     # stock of choice
     data = web.DataReader(stock, 'yahoo', start, end)
-    data.to_csv("./data/stock_data_train.csv")
+    data.to_csv("./data/stock_train.csv")
     print("> training data ...")
     print(data.head(5))
 
@@ -44,7 +44,7 @@ def get_testing_data():
 
     # stock of choice
     data = web.DataReader(stock, 'yahoo', start, end)
-    data.to_csv("./data/stock_data_test.csv")
+    data.to_csv("./data/stock_test.csv")
     print("> training data ...")
     print(data.head(5))
 

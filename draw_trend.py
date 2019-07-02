@@ -13,25 +13,23 @@ from keras.models import load_model
 MSE = []
 input_dim = 4
 total_epochs = 100
-window_size = 15
+window_size = 60
 predict_days = 20
 
 ## Get data
-# get real stock price
-csv_data = pd.read_csv('./data/stock_data_test.csv')
+csv_data = pd.read_csv('./data/stock_test.csv')
 real_stock_price = csv_data.iloc[:, 4:5].values
 real_stock_price = real_stock_price[len(real_stock_price) - predict_days:]
-
-# get x_test && y_test
 [x_test, y_test], scaler_list = getData(input_dim, window_size, "test", predict_days)
 
 ## Model predict
 # load model
-path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
-lstm = load_model(f'{path}epoch_{total_epochs-1}.h5')
-# rnn = load_model(f'{path}rnn.h5')
+# path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
+path = f"./model/draw/"
+lstm = load_model(f'{path}LSTM.h5')
+rnn = load_model(f'{path}RNN.h5')
 lstm_output = lstm.predict(x_test)
-# rnn_output = rnn.predict(x_test)
+rnn_output = rnn.predict(x_test)
 
 # get all the close price
 lstm_close_price = []
@@ -39,25 +37,27 @@ for j in range(len(lstm_output)):
     lstm_close_price.append(lstm_output[j][0])
 
 # get all the close price
-# rnn_close_price = []
-# for j in range(len(rnn_output)):
-#     rnn_close_price.append(rnn_output[j][0])
+rnn_close_price = []
+for j in range(len(rnn_output)):
+    rnn_close_price.append(rnn_output[j][0])
 
 # re-scale back
 lstm_close_price = np.reshape(lstm_close_price, (1, -1))
 lstm_predicted_stock_price = scaler_list[0].inverse_transform(lstm_close_price)
 
 # re-scale back
-# rnn_close_price = np.reshape(rnn_close_price, (1, -1))
-# rnn_predicted_stock_price = scaler_list[0].inverse_transform(rnn_close_price)
+rnn_close_price = np.reshape(rnn_close_price, (1, -1))
+rnn_predicted_stock_price = scaler_list[0].inverse_transform(rnn_close_price)
     
 plt.clf()
+# plt.style.use("ggplot")   # beautiful shit
+plt.title('LSTM vs RNN')
 plt.plot(real_stock_price, 'ro-', label = 'Real Stock Price')
-plt.plot(lstm_predicted_stock_price[0], 'go-', label = 'Predicted lstm')
-# plt.plot(rnn_predicted_stock_price[0], 'bo-', label = 'Predicted rnn')
+plt.plot(lstm_predicted_stock_price[0], 'go-', label = 'Predicted lstm', marker = "^")
+plt.plot(rnn_predicted_stock_price[0], 'bo-', label = 'Predicted rnn', marker = "s")
 plt.xlabel('Time')
 plt.ylabel('Stock Price')
-plt.xticks([i for i in range(21)])
+plt.xticks([i+1 for i in range(20)])
 plt.legend()
 # plt.savefig(filename + '.png')
 plt.show()

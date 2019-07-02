@@ -2,34 +2,34 @@ import pickle
 import matplotlib.pyplot as plt
 
 ## Variable
-input_dim = 4
 total_epochs = 300
-path = f"./model/epoch_{total_epochs},dim_{input_dim}/"
+input_dim = 2
+window_size = 60
+path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
 
 ## Open file
-with open("./model/RNN60", "rb") as fp:   
+with open("./model/draw/" + "2input", "rb") as fp:   
     MSE1 = pickle.load(fp)
 
-with open("./model/RNN120", "rb") as fp:   
+with open("./model/draw/" + "4input", "rb") as fp:   
     MSE2 = pickle.load(fp)
+    tmp = []
+    for i in range(9, total_epochs, 10):
+        tmp += [MSE2[i]]
 
-with open("./model/LSTM60", "rb") as fp:   
-    MSE3 = pickle.load(fp)
-
-with open("./model/LSTM120", "rb") as fp:   
-    MSE4 = pickle.load(fp)
+# baseline
+MSE3 = [17.125 for i in range(total_epochs//10)]
 
 ## plot the MSE
-plt.plot(MSE1, 'r-', label = 'RNN_60days')
-plt.plot(MSE2, 'g-', label = 'RNN_120days')
-plt.plot(MSE3, 'b-', label = 'LSTM_60days')
-plt.plot(MSE4, 'k-', label = 'LSTM_120days')
-plt.title('Mean Square Error')
-plt.xticks([i for i in range(0, total_epochs + 1, 10)])
+plt.title("2 input vs. 4 input")
+plt.style.use("ggplot")   # beautiful shit
+plt.plot(MSE1, 'r-', label = '2input', marker = "s")
+plt.plot(tmp, 'g-', label = '4input', marker = "^")
+plt.plot(MSE3, 'b-', label = 'Baseline', marker = ".")
+plt.xticks([i for i in range(0, 30)])
 plt.xlabel('epoch')
 plt.ylabel('error')
 plt.legend()
 # plt.savefig(f'{path}mse.png')
 plt.show()
-# print(MSE3)
 
