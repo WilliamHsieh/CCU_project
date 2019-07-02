@@ -12,7 +12,7 @@ from keras.models import load_model
 ## Variable
 MSE = []
 input_dim = 4
-total_epochs = 100
+total_epochs = 300
 window_size = 60
 predict_days = 20
 
@@ -24,10 +24,9 @@ real_stock_price = real_stock_price[len(real_stock_price) - predict_days:]
 
 ## Model predict
 # load model
-# path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
 path = f"./model/draw/"
 lstm = load_model(f'{path}LSTM.h5')
-# rnn = load_model(f'{path}RNN.h5')
+# rnn = load_model(f'{path}rnn.h5')
 lstm_output = lstm.predict(x_test)
 # rnn_output = rnn.predict(x_test)
 
@@ -36,7 +35,7 @@ lstm_close_price = []
 for j in range(len(lstm_output)):
     lstm_close_price.append(lstm_output[j][0])
 
-# get all the close price
+# ge all the close price
 # rnn_close_price = []
 # for j in range(len(rnn_output)):
 #     rnn_close_price.append(rnn_output[j][0])
@@ -45,19 +44,18 @@ for j in range(len(lstm_output)):
 lstm_close_price = np.reshape(lstm_close_price, (1, -1))
 lstm_predicted_stock_price = scaler_list[0].inverse_transform(lstm_close_price)
 
-# re-scale back
-# rnn_close_price = np.reshape(rnn_close_price, (1, -1))
-# rnn_predicted_stock_price = scaler_list[0].inverse_transform(rnn_close_price)
-    
+# calculate error
+tmp = []
+for i in range(len(real_stock_price)):
+    tmp += [real_stock_price[i][0] - lstm_predicted_stock_price[0][i]]
+
 plt.clf()
-# plt.style.use("ggplot")   # beautiful shit
-plt.title('predicted stock price')
-plt.plot(real_stock_price, 'ro-', label = 'Real Stock Price')
-plt.plot(lstm_predicted_stock_price[0], 'bo-', label = 'Predicted lstm', marker = "^")
-# plt.plot(rnn_predicted_stock_price[0], 'go-', label = 'Predicted rnn', marker = "s")
-plt.xlabel('Time')
+plt.title('error')
+plt.bar(range(predict_days), tmp, align='center', alpha=0.5)
+
+plt.xticks(range(predict_days), [i+1 for i in range(20)])
+plt.xlabel('day')
 plt.ylabel('Stock Price')
-plt.xticks(range(20), [i+1 for i in range(20)])
 plt.legend()
 # plt.savefig(filename + '.png')
 plt.show()

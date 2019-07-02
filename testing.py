@@ -12,8 +12,8 @@ from preprocess import getData
 ## Variable
 MSE = []
 total_epochs = 300
-input_dim = 2
-window_size = 60
+input_dim = 4
+window_size = 10
 predict_days = 20
 
 ## Get data
