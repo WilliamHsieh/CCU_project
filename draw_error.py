@@ -1,5 +1,6 @@
 ## Import
 import time
+import math
 import pickle
 import numpy as np
 import pandas as pd
@@ -18,8 +19,9 @@ predict_days = 20
 
 ## Get data
 csv_data = pd.read_csv('./data/stock_test.csv')
-real_stock_price = csv_data.iloc[:, 4:5].values
-real_stock_price = real_stock_price[len(real_stock_price) - predict_days:]
+close_price = csv_data.iloc[:, 4:5].values
+real_stock_price = close_price[len(close_price) - predict_days:]
+baseline_stock_price = close_price[len(close_price) - predict_days - 1 : len(close_price) - 1]
 [x_test, y_test], scaler_list = getData(input_dim, window_size, "test", predict_days)
 
 ## Model predict
@@ -45,13 +47,17 @@ lstm_close_price = np.reshape(lstm_close_price, (1, -1))
 lstm_predicted_stock_price = scaler_list[0].inverse_transform(lstm_close_price)
 
 # calculate error
-tmp = []
+err = []
 for i in range(len(real_stock_price)):
-    tmp += [real_stock_price[i][0] - lstm_predicted_stock_price[0][i]]
+#     err += [real_stock_price[i][0] - lstm_predicted_stock_price[0][i]]    #predict price
+    err += [real_stock_price[i][0] - baseline_stock_price[i][0]]    #baseline
 
+rmse = math.sqrt(sum([x**2 for x in err]) / len(err))
+
+## Draw
 plt.clf()
-plt.title('error')
-plt.bar(range(predict_days), tmp, align='center', alpha=0.5)
+plt.title(f'rmse: {rmse:.2f}')
+plt.bar(range(predict_days), err, align='center', alpha=0.5)
 
 plt.xticks(range(predict_days), [i+1 for i in range(20)])
 plt.xlabel('day')

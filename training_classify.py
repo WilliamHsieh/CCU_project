@@ -17,12 +17,13 @@ training_set = []
 training_set_scaled = []
 x_train = []
 y_train = []
+total_epochs = 10
 input_dim = 4
-total_epochs = 20
+window_size = 60
+
 batchSize = 32
 learning_rate = 0.001
 loss_func = 'categorical_crossentropy'
-window_size = 60
 
 ## Function
 ### Feature Scaling
@@ -39,7 +40,7 @@ def feature_scaling():
 def get_training_data():
     global training_set
     # stock of choice
-    dataset_train = pd.read_csv('./data/stock_data_train.csv')
+    dataset_train = pd.read_csv('./data/stock_train.csv')
     training_set.append(dataset_train.iloc[:, 4:5].values)  # close
     training_set.append(dataset_train.iloc[:, 5:6].values)  # volumn
 
@@ -72,12 +73,10 @@ def orginize_data():
     global x_train, y_train
     for i in range(window_size, len(training_data)):
         x_train.append(training_data[i-window_size:i])
-        if (training_data[i][0] > training_data[i-1][0]):
-            y_train.append([1, 0, 0])
-        elif (training_data[i][0] == training_data[i-1][0]):
-            y_train.append([0, 1, 0])
+        if (training_data[i][0] >= training_data[i-1][0]):
+            y_train.append([1, 0])
         elif (training_data[i][0] < training_data[i-1][0]):
-            y_train.append([0, 0, 1])
+            y_train.append([0, 1])
 
     x_train, y_train = np.array(x_train), np.array(y_train)
 
@@ -99,7 +98,7 @@ def get_model():
     model.add(Dropout(0.2))
 
     # Adding the output layer
-    model.add(Dense(units = 3))
+    model.add(Dense(units = 2))
     model.add(Activation('softmax'))
 
     # Compiling

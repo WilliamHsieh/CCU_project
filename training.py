@@ -13,8 +13,8 @@ from keras.optimizers import Adam
 ## Variable
 total_epochs = 300
 input_dim = 4
-window_size = 10
-num_units = 50
+window_size = 60
+num_units = 100
 
 batchSize = 32
 learning_rate = 0.001

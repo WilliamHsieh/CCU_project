@@ -13,7 +13,7 @@ from preprocess import getData
 MSE = []
 total_epochs = 300
 input_dim = 4
-window_size = 10
+window_size = 60
 predict_days = 20
 
 ## Get data

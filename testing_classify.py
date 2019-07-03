@@ -10,8 +10,8 @@ from keras.models import load_model
 
 ## Variable
 MSE = []
+total_epochs = 10
 input_dim = 4
-total_epochs = 20
 window_size = 60
 
 ## Parse data
@@ -23,7 +23,7 @@ for i in range(input_dim):
 
 ### Import
 # Import the training set
-dataset_train = pd.read_csv('./data/stock_data_train.csv')
+dataset_train = pd.read_csv('./data/stock_train.csv')
 training_set = []
 training_set.append(dataset_train.iloc[:, 4:5].values)  # close
 training_set.append(dataset_train.iloc[:, 5:6].values)  # volumn
@@ -34,7 +34,7 @@ training_set.append(dataset_train.iloc[:, 4:5].values)
 
 
 # Import the testing set
-dataset_test = pd.read_csv('./data/stock_data_test.csv')
+dataset_test = pd.read_csv('./data/stock_test.csv')
 testing_set = []
 testing_set.append(dataset_test.iloc[:, 4:5].values)  # close
 testing_set.append(dataset_test.iloc[:, 5:6].values)  # volumn
@@ -77,12 +77,10 @@ x_test = []
 y_test = []
 for i in range(window_size, len(inputs)):
     x_test.append(inputs[i-window_size:i])
-    if (inputs[i][0] > inputs[i-1][0]):
+    if (inputs[i][0] >= inputs[i-1][0]):
         y_test.append(0)
-    elif (inputs[i][0] == inputs[i-1][0]):
-        y_test.append(1)
     elif (inputs[i][0] < inputs[i-1][0]):
-        y_test.append(2)
+        y_test.append(1)
 
 x_test = np.array(x_test)
 
