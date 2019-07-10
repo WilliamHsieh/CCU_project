@@ -11,7 +11,7 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 
 ## Variable
-total_epochs = 300
+total_epochs = 50
 input_dim = 4
 window_size = 60
 num_units = 100
@@ -43,7 +43,7 @@ def get_model(x_train):
 
     # Compiling
     opt = Adam(lr=learning_rate)
-    model.compile(optimizer = opt, loss = loss_func)
+    model.compile(optimizer = opt, metrics=['mean_squared_error'], loss = loss_func)
 
     return model
 
@@ -68,7 +68,7 @@ def training():
         print(f'epoch: {i + 1}/{total_epochs}')
         history = model.fit(x_train, y_train, epochs = 1, batch_size = batchSize)
         model.save(f'{path}epoch_{i}.h5')
-        loss += history.history['loss']
+        loss += history.history['mean_squared_error']
 
     # save
     with open(f'{path}loss', 'wb') as fp:

@@ -17,21 +17,15 @@ with open("./model/draw/" + file1 , "rb") as fp:
     MSE = pickle.load(fp)
     tmp = []
     for i in range(9, total_epochs, 10):
-        tmp += [MSE[i]]
-    MSE = tmp
-    for i in range(len(MSE)):
-        MSE[i] = math.sqrt(MSE[i])
-    MSE1 = MSE
+        tmp += [math.sqrt(MSE[i])]
+    MSE1 = tmp
 
 with open("./model/draw/" + file2 , "rb") as fp:   
     MSE = pickle.load(fp)
     tmp = []
     for i in range(9, total_epochs, 10):
-        tmp += [MSE[i]]
-    MSE = tmp
-    for i in range(len(MSE)):
-        MSE[i] = math.sqrt(MSE[i])
-    MSE2 = MSE
+        tmp += [math.sqrt(MSE[i])]
+    MSE2 = tmp
 
 # baseline
 MSE4 = [math.sqrt(17.125) for i in range(total_epochs//10)]
