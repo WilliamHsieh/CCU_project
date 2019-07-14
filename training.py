@@ -51,7 +51,7 @@ def get_model(x_train):
 def training():
 
     # get data && model
-    [x_train, y_train], s = getData(input_dim, window_size, "train")
+    [x_train, y_train], s = getData(input_dim, window_size)
     model = get_model(x_train)
     loss = []
 

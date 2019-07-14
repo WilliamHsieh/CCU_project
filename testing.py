@@ -20,7 +20,7 @@ predict_days = 20
 csv_data = pd.read_csv('./data/stock_test.csv')
 real_stock_price = csv_data.iloc[:, 4:5].values
 real_stock_price = real_stock_price[len(real_stock_price) - predict_days:]
-[x_test, y_test], scaler_list = getData(input_dim, window_size, "test", predict_days)
+[x_test, y_test], scaler_list = getData(input_dim, window_size, predict_days, "test")
 
 ## Visualize the prediction
 def draw(real, pred, filename):
@@ -70,7 +70,7 @@ for i in range(9, total_epochs, 10):
 
 print("done.")
 
-## Save (MSE) && plot
+## Save MSE
 with open(f"{path}MSE", "wb") as fp:   
     pickle.dump(MSE, fp)
 
