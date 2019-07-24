@@ -15,6 +15,7 @@ input_dim = 4
 total_epochs = 100
 window_size = 60
 predict_days = 20
+data_frequency = 5
 
 ## Get data
 csv_data = pd.read_csv('./data/stock_test.csv')

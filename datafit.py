@@ -1,38 +1,40 @@
 import pandas as pd
 
-input_name = './data/nasdaq_train.csv'
-# input_name = './data/nasdaq_test.csv'
+def datafit(input_name, std_name):
 
-# input_name = './data/dji_train.csv'
-# input_name = './data/dji_test.csv'
+    data_ng = pd.read_csv(input_name)
+    data_sample = pd.read_csv(std_name)
 
-std_name = './data/stock_data_train.csv'
-# std_name = './data/stock_data_test.csv'
-
-data_ng = pd.read_csv(input_name)
-data_sample = pd.read_csv(std_name)
-
-for i in range(len(data_sample['Date'])):
-    if(data_sample['Date'][i] != data_ng['Date'][i]):
-        flag_see=0
-        for j in range(i,len(data_sample['Date'])):
-            if(data_sample['Date'][j] == data_ng['Date'][i]):
-                flag_see=1		
+    for i in range(len(data_sample['Date'])):
+        if(data_sample['Date'][i] != data_ng['Date'][i]):
+            flag_see = 0
+            for j in range(i,len(data_sample['Date'])):
+                if(data_sample['Date'][j] == data_ng['Date'][i]):
+                    flag_see = 1
+                    break
 
 #         print(data_sample['Date'][i] , data_ng['Date'][i])
 
-#data concate
-        if(flag_see == 1):
-            above = data_ng.loc[:i]
-            below = data_ng.loc[i:]
-            data_ng = above.append(below,ignore_index=True)		
-            i=i+1
-        if(flag_see  == 0):
-            above = data_ng.loc[:i]
-            below = data_ng.loc[i+2:]
-            data_ng = above.append(below,ignore_index=True)
-            i=i-1
-        
+            # data concate
+            if(flag_see == 1):
+                above = data_ng.loc[:i]
+                below = data_ng.loc[i:]
+                data_ng = above.append(below, ignore_index=True)
+                i = i + 1
+            if(flag_see == 0):
+                above = data_ng.loc[:i]
+                below = data_ng.loc[i+2:]
+                data_ng = above.append(below, ignore_index=True)
+                i = i - 1
+            
 #         print(data_ng.loc[i-3:i+3])
-			
-data_ng.to_csv(input_name, index=False)
+                            
+    while len(data_ng['Date']) > len(data_sample['Date']):
+        data_ng = data_ng.drop(data_ng.index[-1])
+    data_ng.to_csv(input_name, index=False)
+
+if __name__ == "__main__":
+    input_name = './data/nasdaq_train.csv'
+    std_name = './data/stock_train.csv'
+    datafit(input_name, std_name)
+

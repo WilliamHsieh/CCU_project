@@ -11,10 +11,11 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 
 ## Variable
-total_epochs = 50
+total_epochs = 500
 input_dim = 4
 window_size = 60
-num_units = 100
+num_units = 50
+data_frequency = 5
 
 batchSize = 32
 learning_rate = 0.001
@@ -51,12 +52,12 @@ def get_model(x_train):
 def training():
 
     # get data && model
-    [x_train, y_train], s = getData(input_dim, window_size)
+    [x_train, y_train], s = getData(data_frequency=data_frequency)
     model = get_model(x_train)
     loss = []
 
     # Fit && save model/history
-    path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
+    path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size},freq_{data_frequency}/"
     if not os.path.exists(path):
         os.mkdir(path, 755)
 
