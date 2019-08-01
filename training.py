@@ -11,11 +11,12 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 
 ## Variable
-total_epochs = 500
+total_epochs = 300
 input_dim = 4
-window_size = 60
+window_size = 49
 num_units = 50
 data_frequency = 5
+predict_days = 20
 
 batchSize = 32
 learning_rate = 0.001
@@ -44,7 +45,7 @@ def get_model(x_train):
 
     # Compiling
     opt = Adam(lr=learning_rate)
-    model.compile(optimizer = opt, metrics=['mean_squared_error'], loss = loss_func)
+    model.compile(optimizer = opt, loss = loss_func)
 
     return model
 
@@ -52,7 +53,7 @@ def get_model(x_train):
 def training():
 
     # get data && model
-    [x_train, y_train], s = getData(data_frequency=data_frequency)
+    [x_train, y_train], s = getData(input_dim, window_size, predict_days, data_frequency, "train")
     model = get_model(x_train)
     loss = []
 
@@ -69,10 +70,11 @@ def training():
         print(f'epoch: {i + 1}/{total_epochs}')
         history = model.fit(x_train, y_train, epochs = 1, batch_size = batchSize)
         model.save(f'{path}epoch_{i}.h5')
-        loss += history.history['mean_squared_error']
+        loss += history.history['loss']
 
     # save
     with open(f'{path}loss', 'wb') as fp:
+#         print(loss)
         pickle.dump(loss, fp)
 
 ## Main function

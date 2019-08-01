@@ -57,7 +57,6 @@ def training():
 
     # get data && model
     [x_train, y_train], s = getData(input_dim, window_size, predict_days, "train", True)
-    y_train = to_categorical(y_train)
     model = get_model(x_train)
     loss = []
 

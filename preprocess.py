@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
-## Feature Scaling
+## Data processing
+### Feature Scaling
 def featureScaling(input_dim):
     # 0. close
     # 1. volumn
@@ -14,7 +15,7 @@ def featureScaling(input_dim):
         scaler_list.append(MinMaxScaler(feature_range = (0, 1)))
     return scaler_list
 
-## Import the data set
+### Import the data set
 def importData(data_type):
     raw_data = []
     # stock of choice
@@ -32,7 +33,7 @@ def importData(data_type):
 
     return raw_data
 
-## Scale training set
+### Scale training set
 def scaleData(input_dim, scaler_list, raw_data):
     scaled_data = []
     for x in range(input_dim):
@@ -40,7 +41,7 @@ def scaleData(input_dim, scaler_list, raw_data):
 
     return scaled_data
 
-## Orginize data
+### Orginize data
 def orginizeData(input_dim, window_size, predict_days, data_frequency,
         data_type, scaled_data, classify_flag):
 
@@ -66,9 +67,14 @@ def orginizeData(input_dim, window_size, predict_days, data_frequency,
         else:
             y_data.append(total_data[i])
 
+    # format for classify training
+    if data_type == "train" and classify_flag == True:
+        y_data = to_categorical(y_data)
+
     return np.array(x_data), np.array(y_data)
 
-## Get data
+## API
+### Get data
 def getData(input_dim=4, window_size=60, predict_days=20, data_frequency=1, 
         data_type="train", classify_flag=False):
 
@@ -85,7 +91,7 @@ def getData(input_dim=4, window_size=60, predict_days=20, data_frequency=1,
     return orginizeData(input_dim, window_size, predict_days, data_frequency, 
             data_type, scaled_data, classify_flag), scaler_list
 
-## Get ground truth
+### Get ground truth
 def getGT(predict_days=20, data_frequency=1):
     csv_data = pd.read_csv('./data/stock_test.csv')
     close_price = csv_data.iloc[:, 4:5].values    #close
@@ -96,7 +102,7 @@ def getGT(predict_days=20, data_frequency=1):
 
     return np.reshape(real_stock_price, (1, -1))[0]
 
-## Get baseline
+### Get baseline
 def getBase(predict_days = 20, data_frequency = 1):
     # Get dataset
     gt = getGT(predict_days=predict_days, data_frequency=data_frequency)
@@ -112,29 +118,16 @@ def getBase(predict_days = 20, data_frequency = 1):
 
 ## Main function
 if __name__ == "__main__":
-    print("\n# get ground truth")
+    print("# get ground truth")
     print(getGT())
 
     print("\n# get baseline value")
     print(getBase())
 
-    print("\n# regression train")
-    [x, y], s = getData(4, 60, 20, 1, "train", False)  #default
+    print("\n# get data")
+    # (input_dim, window_size, predict_days, data_frequency, data_type, classify_flag)
+#     [x, y], s = getData(4, 60, 20, 1, "train", False) #default
+    [x, y], s = getData(4, 49, 20, 5, "test", False)
     print(x.shape)
     print(y.shape)
-
-#     print("\n# regression test")
-#     [x, y], s = getData(4, 60, 20, 5, "test", False)
-#     print(x.shape)
-#     print(y.shape)
-
-#     print("\n# classification train")
-#     [x, y], s = getData(4, 60, 20, 1, "train", True)
-#     print(x.shape)
-#     print(y.shape)
-
-#     print("\n# classification test")
-#     [x, y], s = getData(4, 60, 20, 1, "test", True)
-#     print(x.shape)
-#     print(y.shape)
 

@@ -12,15 +12,15 @@ from preprocess import getGT
 
 ## Variable
 MSE = []
-total_epochs = 100
+total_epochs = 300
 input_dim = 4
-window_size = 60
+window_size = 49
 predict_days = 20
 data_frequency = 5
 
 ## Get data
 real_stock_price = getGT(predict_days, data_frequency)
-[x_test, y_test], scaler_list = getData(data_frequency=data_frequency, data_type="test")
+[x_test, y_test], scaler_list = getData(input_dim, window_size, predict_days, data_frequency, "test")
 
 ## Visualize the prediction
 def draw(real, pred, filename, epoch):
