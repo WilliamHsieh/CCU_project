@@ -60,6 +60,7 @@ def orginizeData(input_dim, window_size, predict_days, data_frequency,
     # get x_data, y_data
     x_data = []
     y_data = []
+    #TODO: set the input dataset to fix size
     for i in range(window_size, len(total_data)):
         x_data.append(total_data[i-window_size:i])
         if classify_flag:

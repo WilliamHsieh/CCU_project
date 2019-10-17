@@ -11,11 +11,11 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 
 ## Variable
-total_epochs = 300
-input_dim = 4
-window_size = 49
+total_epochs = 10
+input_dim = 3
+window_size = 30
 num_units = 50
-data_frequency = 5
+data_frequency = 1
 predict_days = 20
 
 batchSize = 32
