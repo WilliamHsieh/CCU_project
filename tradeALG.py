@@ -1,5 +1,4 @@
 import pandas as pd
-stock = [2, 3, 4, 5, 6, 4, 2, 2, 4, 5, 2, 2, 4, 5, 3, 3, 2, 2, 9, 7]
 money = 10000000
 bought = 0
 
