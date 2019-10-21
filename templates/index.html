@@ -5,21 +5,117 @@
 <title>home page</title>
 
 <style type="text/css">
+
 body {
+	padding-left: 11em;
+    font-family: Georgia, "Times New Roman",
+          Times, serif;
+    color: rgb(32, 116, 128);
+	background: rgb(240, 230, 187);}
+
+input {padding:15px 11px; background:rgb(255, 255, 255); border:0 none;
+	cursor:pointer;
+	-webkit-border-radius: 11px;
+	border-radius: 5px; 
+	margin: 4;
+	border: 1px solid #555;
+	margin-right:10px;	
+	font-family: Helvetica, Geneva, Arial,
+	SunSans-Regular, sans-serif ;
+	top: 15em;
+	}
+
+
+input.sub{
+	position: absolute;
+    top: 20em;
+	left: 24em;
+	width: 15em;
+	font-size:20px;
+	text-align: center;
 }
+
+h1.a0{
+	padding-left: 9em;
+	font-family: a Arial,
+	SunSans-Regular, sans-serif; 
+	}
+	
+h2.a1{
+	padding-left: 11em;
+	font-family: Helvetica, Geneva, Arial,
+	SunSans-Regular, sans-serif; 
+	position: absolute;
+    top: 4em;
+    left: 22em; }	
+
+h2.a2{
+	padding-left: 11em;
+	font-family: Helvetica, Geneva, Arial,
+	SunSans-Regular, sans-serif; 
+	position: absolute;
+    top: 6em;
+    left: 22em; }
+	
+h2.a3{
+	padding-left: 11em;
+	font-family: Helvetica, Geneva, Arial,
+	SunSans-Regular, sans-serif; 
+	position: absolute;
+    top: 8em;
+    left: 22em; }	
+
+h2.a4{
+	padding-left: 11em;
+	font-family: Helvetica, Geneva, Arial,
+	SunSans-Regular, sans-serif; 
+	position: absolute;
+    top: 10em;
+    left: 22em;
+}
+	
+h2.a5{
+	padding-left: 11em;
+	font-family: Helvetica, Geneva, Arial,
+	SunSans-Regular, sans-serif; 
+	position: absolute;
+    top: 12em;
+    left: 22em;
+}
+	
+
 </style>
+
 
 {% endblock %}
 
 
 {% block body %}
-<form action="/" method="POST">
-	total epochs: <input type="text" name="total_epochs" id="content" value="300"><br>
-	input dimension: <input type="text" name="input_dim" id="content" value="4"><br>
-	window size: <input type="text" name="window_size" id="content" value="49"><br>
-	predict days: <input type="text" name="predict_days" id="content" value="20"><br>
-	data frequency: <input type="text" name="data_frequency" id="content" value="5"><br>
-    <input type="submit" value="submit">
-</form>
 
+    <div>
+		<h1 class = "a0"> 基本模型預測效果展示</h1>
+	</div>	
+
+	
+	<form action="/" method="POST" class = "aaa">
+		<div>
+			total epochs　　: <input type="text" name="total_epochs" id="content" value="300"><br>
+			input dimension: <input type="text" name="input_dim" id="content" value="4"><br>
+			window size　　: <input type="text" name="window_size" id="content" value="49"><br>
+			predict days　　: <input type="text" name="predict_days" id="content" value="20"><br>
+			data frequency　: <input type="text" name="data_frequency" id="content" value="5"><br>
+		</div>
+		<div>
+			<input type="submit" value="submit" class = "sub">
+		</div>
+	</form>
+	
+
+	<div>
+		<h2 class = "a1">total epochs: model訓練總次數</h2>
+		<h2 class = "a2">input dimension: input的資料的多樣性</h2>
+		<h2 class = "a3">window size: 參考過去的天數</h2>
+		<h2 class = "a4">predict days: 預測的天數</h2>
+		<h2 class = "a5">data frequency: 每幾天取一筆資料</h2>
+	</div>
 {% endblock %}
