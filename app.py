@@ -5,10 +5,24 @@ from preprocess import getGT
 from preprocess import getData
 from keras import backend as K
 from keras.models import load_model
+import matplotlib.pyplot as plt
 
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
+
+## draw
+def draw(pred, real):
+    plt.clf()
+#     plt.style.use("ggplot")   # beautiful shit
+    plt.title('predicted stock price')
+    plt.plot(real, 'ro-', label = 'Real Stock Price')
+    plt.plot(pred, 'bo-', label = "predicted stock price", marker = "^")
+    plt.xlabel('Time')
+    plt.ylabel('Stock Price')
+    plt.xticks(range(20), [i+1 for i in range(20)])
+    plt.legend()
+    plt.savefig('static/tmp.png')
 
 ## "/"
 @app.route("/", methods=['POST', 'GET'])
@@ -20,8 +34,12 @@ def index():
         predict_days = int(request.form['predict_days'])
         data_frequency = int(request.form['data_frequency'])
 
-        result = predict(total_epochs, input_dim, window_size, predict_days, data_frequency)
-        return str(result)
+        pred = predict(total_epochs, input_dim, window_size, predict_days, data_frequency)
+        real = getGT(predict_days, data_frequency)
+        draw(pred, real)
+
+        img_name = os.path.join('static', 'tmp.png')
+        return render_template("img.html", stock_img = img_name)
     else:
         return render_template("index.html")
 
