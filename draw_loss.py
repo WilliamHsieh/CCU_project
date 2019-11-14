@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 from preprocess import getData
 
 ## Variable
-total_epochs = 500
+total_epochs = 300
 input_dim = 4
-window_size = 60
-data_frequency = 5
+window_size = 30
+data_frequency = 1
 path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size},freq_{data_frequency}/"
 
 ## Open file
@@ -16,10 +16,10 @@ file1 = "LOSS"
 title = "rmse vs. epoch"
 with open(path + "loss" , "rb") as fp:   
     LOSS = pickle.load(fp)
-#     tmp = []
-#     for i in range(9, total_epochs, 10):
-#         tmp += [math.sqrt(LOSS[i])]
-#     LOSS = tmp
+    tmp = []
+    for i in range(9, total_epochs, 10):
+        tmp += [math.sqrt(LOSS[i])]
+    LOSS = tmp
 
     # rescale
 #     [x_test, y_test], scaler_list = getData(input_dim, window_size, "train")

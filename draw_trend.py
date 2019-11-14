@@ -12,11 +12,11 @@ from keras.models import load_model
 
 ## Variable
 MSE = []
-total_epochs = 100
-input_dim = 2
+total_epochs = 300
+input_dim = 4
 window_size = 60
 predict_days = 20
-data_frequency = 7
+data_frequency = 1
 
 ## Get data
 real_stock_price = getGT(predict_days, data_frequency)
@@ -26,7 +26,7 @@ real_stock_price = getGT(predict_days, data_frequency)
 # load model
 # path = f"./model/epoch_{total_epochs},dim_{input_dim},win_{window_size}/"
 path = f"./model/draw/"
-lstm = load_model(f'{path}333.h5')
+lstm = load_model(f'{path}000.h5')
 label1 = 'test1'
 # rnn = load_model(f'{path}50unit.h5')
 # label2 = 'test2'
