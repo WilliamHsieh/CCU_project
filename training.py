@@ -15,7 +15,7 @@ total_epochs = 300
 input_dim = 4
 window_size = 60
 num_units = 50
-data_frequency = 1
+data_frequency = 3
 predict_days = 1
 
 batchSize = 32
@@ -72,8 +72,9 @@ def training():
     for i in range(total_epochs):
         print(f'epoch: {i + 1}/{total_epochs}')
         history = model.fit(x_train, y_train, epochs = 1, batch_size = batchSize)
-        model.save(f'{path}epoch_{i}.h5')
         loss += history.history['loss']
+        if (i + 1) % 10 == 0:
+            model.save(f'{path}epoch_{i}.h5')
 
     # save
     with open(f'{path}loss', 'wb') as fp:

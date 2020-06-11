@@ -40,7 +40,7 @@ def r2():
     dim = 4
     win = 60
     pred = 20
-    freq = 5
+    freq = 3
     fname = ""
 #     model_name = f"./model/draw/123/{epoch}_{dim}_{win}_{freq}.h5"
 
@@ -56,27 +56,28 @@ def r2():
 ## draw boxplot
 def drawBoxplot():
     draw = []
+    pred = 20
 
-    real_price, pred_price = P.getGTandPred(300, 4, 60, 21, 1, ",default")
-    draw += [[real_price[i] - real_price[i+1] for i in range(20)]]      #baseline
-    draw += [[pred_price[i+1] - real_price[i+1] for i in range(20)]]    #predict
+    real_price, pred_price = P.getGTandPred(300, 4, 60, pred+1, 1, ",default")
+    draw += [[real_price[i] - real_price[i+1] for i in range(pred)]]      #baseline
+    draw += [[pred_price[i+1] - real_price[i+1] for i in range(pred)]]    #predict
 
-    real_price, pred_price = P.getGTandPred(300, 4, 60, 21, 1, ",3y")
-    draw += [[pred_price[i+1] - real_price[i+1] for i in range(20)]]
+    real_price, pred_price = P.getGTandPred(300, 4, 60, pred, 1, ",3y")
+    draw += [[pred_price[i] - real_price[i] for i in range(pred)]]
 
-    real_price, pred_price = P.getGTandPred(300, 4, 60, 21, 1, ",1y")
-    draw += [[pred_price[i+1] - real_price[i+1] for i in range(20)]]
+    real_price, pred_price = P.getGTandPred(300, 4, 60, pred, 1, ",1y")
+    draw += [[pred_price[i] - real_price[i] for i in range(pred)]]
 
 #     axes.set_ylabel('err')
     fig1, axes = plt.subplots()
     axes.set_title('Box Plot')
     axes.boxplot(draw)
-    plt.xticks(range(1, len(draw)+1), ["baseline", "6y", "3y", "1y"])
+    plt.xticks(range(1, len(draw)+1), ["baseline", "5y", "3y", "1y"])
     plt.show()
     
 ## main
 if __name__ == "__main__":
 #     correlation()
-#     r2()
-    drawBoxplot()
+    r2()
+#     drawBoxplot()
 

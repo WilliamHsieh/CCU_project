@@ -60,11 +60,15 @@ if __name__ == "__main__":
         os.mkdir("./data", 755)
 
     # get stock data
-    datatype = "train"
-#     datatype = "test"
+#     datatype = "train"
+    datatype = "test"
     cut = -500 if datatype == "test" else 0
-    start = datetime.datetime(2014, 5, 1)
-    end = datetime.datetime(2019, 5, 1)
+#     start = datetime.datetime(2015, 10, 30)
+#     end = datetime.datetime(2019, 10, 30)
+#     start = datetime.datetime(2000, 5, 1)
+#     end = datetime.datetime(2019, 5, 1)
+    start = datetime.datetime(2015, 9, 11)
+    end = datetime.datetime(2019, 9, 11)
     get_stock(start, end, datatype, cut)
 
     print("> fitting data ...")
@@ -74,11 +78,11 @@ if __name__ == "__main__":
     print("done.\n")
 
     # append newest data
-#     print("> append newest data...")
-#     for name in filename:
-#         data = pd.read_csv(name)
-#         data = data.append(data.tail(1))
-#         data.to_csv(name, index=False)
-#         print(data.tail(3))
-#     print("done.")
+    print("> append newest data...")
+    for name in filename:
+        data = pd.read_csv(name)
+        data = data.append(data.tail(1))
+        data.to_csv(name, index=False)
+        print(data.tail(3))
+    print("done.")
 
